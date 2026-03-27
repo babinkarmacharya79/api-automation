@@ -1,0 +1,32 @@
+meta {
+  name: FigureList
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://helix-api-1.idmc.local.togglecorp.com/graphql
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "operationName": "ExtractionFigureList",
+    "query": "query ExtractionFigureList($ordering: String, $page: Int, $pageSize: Int, $filters: FigureExtractionFilterDataInputType) { figureList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { page pageSize totalCount results { id oldId createdAt createdBy { id fullName __typename } category categoryDisplay geolocations sourcesReliability country { id idmcShortName __typename } entry { id oldId articleTitle __typename } figureCause figureCauseDisplay event { id oldId name crisis { id name __typename } __typename } figureTypology role roleDisplay totalFigures term termDisplay flowEndDate flowStartDate stockDate stockReportingDate includeIdu isHousingDestruction reviewStatus reviewStatusDisplay __typename } __typename } }",
+    "variables": {
+      "ordering": "-created_at",
+      "page": 1,
+      "pageSize": 10,
+      "filters": {}
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

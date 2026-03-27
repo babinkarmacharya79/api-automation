@@ -1,0 +1,51 @@
+meta {
+  name: Countries
+  type: http
+  seq: 5
+}
+
+post {
+  url: https://helix-api-1.idmc.local.togglecorp.com/graphql
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "query": "query Countries($ordering: String, $page: Int, $pageSize: Int, $filters: CountryFilterDataInputType) { countryList(ordering: $ordering page: $page pageSize: $pageSize filters: $filters) { totalCount pageSize page results { id iso3 idmcShortName region { id name __typename } geographicalGroup { id name __typename } totalStockConflict totalStockDisaster totalFlowConflict totalFlowDisaster __typename } __typename } }",
+    "variables": {
+      "ordering": "idmc_short_name",
+      "page": 1,
+      "pageSize": 10,
+      "filters": {
+        "aggregateFigures": {
+          "year": 2026
+        }
+      }
+    }
+  }
+}
+
+script:post-response {
+  test("Status code is 200", function(){
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Verify Countries Response", function() {
+      const countriesData = res.getBody();
+      expect(countriesData.data.countryList.results).to.be.an("array");
+      countriesData.data.countryList.results.forEach(row => {
+          expect(row).to.have.property("region");
+          expect(row).to.have.property("geographicalGroup");
+      });
+  
+  })
+}
+
+settings {
+  encodeUrl: true
+}
