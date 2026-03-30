@@ -1,0 +1,38 @@
+meta {
+  name: EventList
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://helix-api-1.idmc.local.togglecorp.com/graphql
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "operationName": "EventList",
+    "query": "query EventList($ordering: String, $page: Int, $pageSize: Int, $filters: EventFilterDataInputType) { eventList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { eventType eventTypeDisplay createdAt createdBy { id fullName __typename } startDate endDate name id oldId entryCount ignoreQa crisis { name id __typename } countries { id idmcShortName __typename } figureTypology eventTypology totalStockIdpFigures totalFlowNdFigures assignee { id fullName username __typename } reviewStatus reviewStatusDisplay reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } includeTriangulationInQa __typename } __typename } }",
+    "variables": {
+      "ordering": "-created_at",
+      "page": 1,
+      "pageSize": 10,
+      "filters": {
+        "createdByIds": [],
+        "filterFigures": {},
+        "aggregateFigures": {
+          "filterFigures": {}
+        }
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

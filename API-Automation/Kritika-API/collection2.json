@@ -1,0 +1,762 @@
+{
+  "info": {
+    "_postman_id": "c79736ab-2f1d-4b7a-847f-98ffd6d54000",
+    "name": "My Collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53265241",
+    "_collection_link": "https://go.postman.co/collection/53265241-c79736ab-2f1d-4b7a-847f-98ffd6d54000?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\",function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\",()=>\r",
+                  "{\r",
+                  "    pm.response.to.have.responseTime.not.above(3000);\r",
+                  "});\r",
+                  "const jsonData=pm.response.json();\r",
+                  "pm.test(\"Correct User data are received\",()=>\r",
+                  "{\r",
+                  "   pm.expect(jsonData).to.be.an(\"object\");\r",
+                  "   pm.expect(jsonData.data.login.result.id).to.equal('175');\r",
+                  "   pm.expect(jsonData.data.login.result.fullName).to.be.a(\"string\");\r",
+                  "   pm.expect(jsonData.data.login.result.isActive).to.be.true;\r",
+                  "   pm.expect(jsonData.data.login.result.portfoliosMetadata.portfolioRole).to.equal(\"GUEST\");\r",
+                  "\r",
+                  "\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "gkritikaaa18@gmail.com",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "Password@123",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"query\": \"mutation Login($input: LoginInputType!) { login(data: $input) { result { id fullName isActive portfolios { id role monitoringSubRegion { id name countries { id idmcShortName boundingBox geojsonUrl iso2 __typename } __typename } __typename } permissions { action entities __typename } portfoliosMetadata { portfolioRole __typename } __typename } captchaRequired errors ok __typename } }\",\r\n  \"variables\": {\r\n        \"input\": {\r\n            \"email\": \"{{email}}\",\r\n            \"password\": \"Password@123\",\r\n            \"siteKey\": \"10000000-ffff-ffff-ffff-000000000001\"\r\n        }\r\n    }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": [
+                "{{base_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 40000ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(40000);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.eventList.results).to.be.an(\"array\");\r",
+              "    jsonData.data.eventList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"eventType\");\r",
+              "        pm.expect(row).to.have.property(\"eventTypeDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"startDate\");\r",
+              "        pm.expect(row).to.have.property(\"endDate\");\r",
+              "        pm.expect(row).to.have.property(\"name\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        pm.expect(row).to.have.property(\"countries\").to.be.an(\"array\");\r",
+              "        pm.expect(row).to.have.property(\"figureTypology\");\r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "        pm.expect(row.startDate <= row.endDate).to.be.true;\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Session-Id",
+            "value": "",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query EventList($ordering: String, $page: Int, $pageSize: Int, $filters: EventFilterDataInputType) { eventList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { eventType eventTypeDisplay createdAt createdBy { id fullName __typename } startDate endDate name id oldId entryCount ignoreQa crisis { name id __typename } countries { id idmcShortName __typename } figureTypology eventTypology totalStockIdpFigures totalFlowNdFigures assignee { id fullName username __typename } reviewStatus reviewStatusDisplay reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } includeTriangulationInQa __typename } __typename } }\",\r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n    \"page\": 1,\r\n    \"pageSize\": 10,\r\n    \"filters\": {\r\n        \"createdByIds\": [],\r\n        \"filterFigures\": {},\r\n        \"aggregateFigures\": {\r\n            \"filterFigures\": {}\r\n        }\r\n    }\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Extraction Figure List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 40000ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(40000);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.figureList.results).to.be.an(\"array\");\r",
+              "    pm.expect(jsonData.data.figureList.totalCount).to.be.a(\"number\");\r",
+              "    jsonData.data.figureList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"entry\");\r",
+              "        pm.expect(row).to.have.property(\"event\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"category\");\r",
+              "        pm.expect(row).to.have.property(\"categoryDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"geolocations\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        pm.expect(row).to.have.property(\"country\");\r",
+              "        pm.expect(row).to.have.property(\"figureCause\");\r",
+              "        pm.expect(row).to.have.property(\"figureCauseDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"figureTypology\");\r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "        pm.expect(new Date(row.flowStartDate) <= new Date(row.flowEndDate)).to.be.true;\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query ExtractionFigureList($ordering: String, $page: Int, $pageSize: Int, $filters: FigureExtractionFilterDataInputType) { figureList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { page pageSize totalCount results { id oldId createdAt createdBy { id fullName __typename } category categoryDisplay geolocations sourcesReliability country { id idmcShortName __typename } entry { id oldId articleTitle __typename } figureCause figureCauseDisplay event { id oldId name crisis { id name __typename } __typename } figureTypology role roleDisplay totalFigures term termDisplay flowEndDate flowStartDate stockDate stockReportingDate includeIdu isHousingDestruction reviewStatus reviewStatusDisplay __typename } __typename } }\",\r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n    \"page\": 1,\r\n    \"pageSize\": 10,\r\n    \"filters\": {}\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Extraction Entry list",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 400ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(400);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.entryList.results).to.be.an(\"array\");\r",
+              "    pm.expect(jsonData.data.entryList.totalCount).to.be.a(\"number\");\r",
+              "   \r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query ExtractionEntryListFilters($ordering: String, $page: Int, $pageSize: Int, $filters: EntryExtractionFilterDataInputType) { entryList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { page pageSize totalCount results { articleTitle createdAt id oldId createdBy { id fullName __typename } publishDate publishers { results { id name __typename } __typename } url __typename } __typename } }\",\r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n    \"page\": 1,\r\n    \"pageSize\": 10,\r\n    \"filters\": {}\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Countries",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 700ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(700);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.countryList.results).to.be.an(\"array\");\r",
+              "    pm.expect(jsonData.data.countryList.totalCount).to.be.a(\"number\");\r",
+              "    jsonData.data.countryList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"idmcShortName\");\r",
+              "        pm.expect(row).to.have.property(\"region\");\r",
+              "        pm.expect(row).to.have.property(\"geographicalGroup\");\r",
+              "       \r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        \r",
+              "       \r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query Countries($ordering: String, $page: Int, $pageSize: Int, $filters: CountryFilterDataInputType) { countryList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { id iso3 idmcShortName region { id name __typename } geographicalGroup { id name __typename } totalStockConflict totalStockDisaster totalFlowConflict totalFlowDisaster __typename } __typename } }\",\r\n  \"variables\": {\r\n     \"ordering\": \"idmc_short_name\",\r\n        \"page\": 1,\r\n        \"pageSize\": 10,\r\n        \"filters\": {\r\n            \"aggregateFigures\": {\r\n            \"year\": 2026\r\n            }\r\n        }\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crisis",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 700ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(700);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.crisisList.results).to.be.an(\"array\");\r",
+              "    pm.expect(jsonData.data.crisisList.totalCount).to.be.a(\"number\");\r",
+              "    jsonData.data.crisisList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"name\");\r",
+              "        pm.expect(row).to.have.property(\"crisisType\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"crisisTypeDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"countries\").to.be.an(\"array\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        \r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query Crises($ordering: String, $page: Int, $pageSize: Int, $filters: CrisisFilterDataInputType) { crisisList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { name id crisisType crisisTypeDisplay createdAt createdBy { id fullName __typename } eventCount countries { id idmcShortName __typename } startDate endDate totalStockIdpFigures totalFlowNdFigures reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } __typename } __typename } }\",\r\n  \"variables\": {\r\n   \"ordering\": \"-created_at\",\r\n  \"page\": 1,\r\n  \"pageSize\": 10,\r\n  \"filters\": {\r\n    \"filterFigures\": {},\r\n    \"aggregateFigures\": {\r\n      \"filterFigures\": {}\r\n    }\r\n  }\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FilterbyCountries",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 40000ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(40000);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.eventList.results).to.be.an(\"array\");\r",
+              "    jsonData.data.eventList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"eventType\");\r",
+              "        pm.expect(row).to.have.property(\"eventTypeDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"startDate\");\r",
+              "        pm.expect(row).to.have.property(\"endDate\");\r",
+              "        pm.expect(row).to.have.property(\"name\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        pm.expect(row).to.have.property(\"countries\").to.be.an(\"array\");\r",
+              "        pm.expect(row).to.have.property(\"figureTypology\");\r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "        pm.expect(row.startDate <= row.endDate).to.be.true;\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              "pm.test(\"Verify Filter applied (Country)\",()=>\r",
+              "{\r",
+              "    jsonData.data.eventList.results.forEach(row=>\r",
+              "    {\r",
+              "        for(i=0;i<=row.length;i++)\r",
+              "        {\r",
+              "            pm.expect(jsonData.data.eventList.results[i].countries[i]).to.have.property(\"id\").to.equal(\"16\");\r",
+              "            pm.expect(jsonData.data.eventList.results[i].countries[i]).to.have.property(\"idmcShortName\").to.equal(\"Bangladesh\");\r",
+              "        }\r",
+              "    })\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query EventList($ordering: String, $page: Int, $pageSize: Int, $filters: EventFilterDataInputType) { eventList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { eventType eventTypeDisplay createdAt createdBy { id fullName __typename } startDate endDate name id oldId entryCount ignoreQa crisis { name id __typename } countries { id idmcShortName __typename } figureTypology eventTypology totalStockIdpFigures totalFlowNdFigures assignee { id fullName username __typename } reviewStatus reviewStatusDisplay reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } includeTriangulationInQa __typename } __typename } }\",\r\n  \r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n  \"page\": 1,\r\n  \"pageSize\": 10,\r\n  \"filters\": {\r\n    \"countries\": [\r\n      \"16\"\r\n    ],\r\n    \"eventTypes\": [],\r\n    \"reviewStatus\": [],\r\n    \"crisisByIds\": [],\r\n    \"name\": null,\r\n    \"createdByIds\": [],\r\n    \"startDate_Gte\": null,\r\n    \"endDate_Lte\": null,\r\n    \"violenceSubTypes\": [],\r\n    \"contextOfViolences\": [],\r\n    \"disasterSubTypes\": [],\r\n    \"filterFigures\": {},\r\n    \"aggregateFigures\": {\r\n      \"filterFigures\": {}\r\n    }\r\n  }\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FilterbyCauses and HazardTypes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 40000ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(40000);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.eventList.results).to.be.an(\"array\");\r",
+              "    jsonData.data.eventList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"eventType\");\r",
+              "        pm.expect(row).to.have.property(\"eventTypeDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"startDate\");\r",
+              "        pm.expect(row).to.have.property(\"endDate\");\r",
+              "        pm.expect(row).to.have.property(\"name\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        pm.expect(row).to.have.property(\"countries\").to.be.an(\"array\");\r",
+              "        pm.expect(row).to.have.property(\"figureTypology\");\r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "        pm.expect(row.startDate <= row.endDate).to.be.true;\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              "pm.test(\"Verify Filter applied (EventType)\",()=>\r",
+              "{\r",
+              "    jsonData.data.eventList.results.forEach(row=>\r",
+              "    {\r",
+              "        for(i=0;i<=row.length;i++)\r",
+              "        {\r",
+              "            pm.expect(jsonData.data.eventList.results[i].eventTypology[i]).to.equal(\"Earthquake\")||(\"Tsunami\");\r",
+              "            pm.expect(jsonData.data.eventList.results[i].eventType[i]).to.equal(\"DISASTER\");\r",
+              "\r",
+              "        }\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query EventList($ordering: String, $page: Int, $pageSize: Int, $filters: EventFilterDataInputType) { eventList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { totalCount pageSize page results { eventType eventTypeDisplay createdAt createdBy { id fullName __typename } startDate endDate name id oldId entryCount ignoreQa crisis { name id __typename } countries { id idmcShortName __typename } figureTypology eventTypology totalStockIdpFigures totalFlowNdFigures assignee { id fullName username __typename } reviewStatus reviewStatusDisplay reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } includeTriangulationInQa __typename } __typename } }\",\r\n  \r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n  \"page\": 1,\r\n  \"pageSize\": 10,\r\n  \"filters\": {\r\n    \"countries\": [],\r\n    \"eventTypes\": [\r\n        \"DISASTER\"\r\n    ],\r\n    \"reviewStatus\": [],\r\n    \"crisisByIds\": [],\r\n    \"name\": null,\r\n    \"createdByIds\": [],\r\n    \"startDate_Gte\": null,\r\n    \"endDate_Lte\": null,\r\n    \"violenceSubTypes\": [],\r\n    \"contextOfViolences\": [],\r\n    \"disasterSubTypes\": [\r\n        \"1\",\r\n        \"2\"\r\n    ],\r\n    \"filterFigures\": {},\r\n    \"aggregateFigures\": {\r\n      \"filterFigures\": {}\r\n    }\r\n  }\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "FilterinFigureList by Causes,Role &Date",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\",function()\r",
+              "{\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 40000ms\",()=>\r",
+              "{\r",
+              "    pm.response.to.have.responseTime.not.above(40000);\r",
+              "});\r",
+              "const jsonData=pm.response.json();\r",
+              "\r",
+              "pm.test(\"Verify Json response\",()=>\r",
+              "{\r",
+              "    pm.expect(jsonData.data.figureList.results).to.be.an(\"array\");\r",
+              "    pm.expect(jsonData.data.figureList.totalCount).to.be.a(\"number\");\r",
+              "    jsonData.data.figureList.results.forEach(row=>\r",
+              "    {\r",
+              "        pm.expect(row).to.have.property(\"entry\");\r",
+              "        pm.expect(row).to.have.property(\"event\");\r",
+              "        pm.expect(row).to.have.property(\"createdAt\");\r",
+              "        pm.expect(row).to.have.property(\"createdBy\");\r",
+              "        pm.expect(row).to.have.property(\"category\");\r",
+              "        pm.expect(row).to.have.property(\"categoryDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"geolocations\");\r",
+              "        pm.expect(row).to.have.property(\"id\");\r",
+              "        pm.expect(row).to.have.property(\"country\");\r",
+              "        pm.expect(row).to.have.property(\"figureCause\");\r",
+              "        pm.expect(row).to.have.property(\"figureCauseDisplay\");\r",
+              "        pm.expect(row).to.have.property(\"figureTypology\");\r",
+              "        pm.expect(row.createdAt).to.be.a('string');\r",
+              "        pm.expect(new Date(row.flowStartDate) <= new Date(row.flowEndDate)).to.be.true;\r",
+              "    });    \r",
+              "   \r",
+              "})\r",
+              "pm.test(\"Verify filter applied(Causes and Roles) \",()=>\r",
+              "{\r",
+              "    jsonData.data.figureList.results.forEach(row=>\r",
+              "    {\r",
+              "        for(i=0;i<=row.length;i++)\r",
+              "        {\r",
+              "            pm.expect(jsonData.data.figureList.results[i].figureCause[i]).to.equal(\"DISASTER\")||(\"CONFLICT\")||((\"DISASTER\")&(\"CONFLICT\"));\r",
+              "            pm.expect(jsonData.data.figureList.results[i].role[i]).to.equal(\"RECOMMENDED\");\r",
+              "\r",
+              "        }\r",
+              "    })\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"query\": \"query ExtractionFigureList($ordering: String, $page: Int, $pageSize: Int, $filters: FigureExtractionFilterDataInputType) { figureList(ordering: $ordering, page: $page, pageSize: $pageSize, filters: $filters) { page pageSize totalCount results { id oldId createdAt createdBy { id fullName __typename } category categoryDisplay geolocations sourcesReliability country { id idmcShortName __typename } entry { id oldId articleTitle __typename } figureCause figureCauseDisplay event { id oldId name crisis { id name __typename } __typename } figureTypology role roleDisplay totalFigures term termDisplay flowEndDate flowStartDate stockDate stockReportingDate includeIdu isHousingDestruction reviewStatus reviewStatusDisplay __typename } __typename } }\",\r\n  \"variables\": {\r\n    \"ordering\": \"-created_at\",\r\n    \"page\": 1,\r\n    \"pageSize\": 10,\r\n    \"filters\": {\r\n    \"filterFigureRegions\": [],\r\n    \"filterFigureCountries\": [],\r\n    \"filterFigureCrises\": [],\r\n    \"filterFigureCrisisTypes\": [\r\n      \"CONFLICT\",\r\n      \"DISASTER\"\r\n    ],\r\n    \"filterFigureTags\": [],\r\n    \"filterEntryArticleTitle\": null,\r\n    \"filterFigureRoles\": [\r\n      \"RECOMMENDED\"\r\n    ],\r\n    \"filterFigureTerms\": [],\r\n    \"filterFigureStartAfter\": null,\r\n    \"filterFigureEndBefore\": null,\r\n    \"filterFigureCategories\": [],\r\n    \"filterFigureCategoryTypes\": null,\r\n    \"filterFigureGeographicalGroups\": [],\r\n    \"filterEntryPublishers\": [],\r\n    \"filterFigureSources\": [],\r\n    \"filterFigureHasDisaggregatedData\": null,\r\n    \"filterFigureCreatedBy\": [],\r\n    \"filterFigureEvents\": [],\r\n    \"filterFigureReviewStatus\": [],\r\n    \"filterFigureHasExcerptIdu\": null,\r\n    \"filterFigureHasHousingDestruction\": null,\r\n    \"filterFigureViolenceSubTypes\": [],\r\n    \"filterFigureContextOfViolence\": [],\r\n    \"filterFigureDisasterSubTypes\": []\r\n  }\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://helix-api-1.idmc.local.togglecorp.com/graphql",
+          "protocol": "https",
+          "host": [
+            "helix-api-1",
+            "idmc",
+            "local",
+            "togglecorp",
+            "com"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

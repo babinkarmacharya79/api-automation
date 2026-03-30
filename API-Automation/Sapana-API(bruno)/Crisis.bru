@@ -1,0 +1,32 @@
+meta {
+  name: Crisis
+  type: http
+  seq: 6
+}
+
+post {
+  url: https://helix-api-1.idmc.local.togglecorp.com/graphql
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "query": "query Crises($ordering: String, $page: Int, $pageSize: Int, $filters: CrisisFilterDataInputType) { crisisList(ordering: $ordering page: $page pageSize: $pageSize filters: $filters) { totalCount pageSize page results { name id crisisType crisisTypeDisplay createdAt createdBy { id fullName __typename } eventCount countries { id idmcShortName __typename } startDate endDate totalStockIdpFigures totalFlowNdFigures reviewCount { reviewApprovedCount reviewInProgressCount reviewReRequestCount reviewNotStartedCount __typename } __typename } __typename } }",
+    "variables": {
+      "ordering": "-created_at",
+      "page": 1,
+      "pageSize": 10,
+      "filters": {
+        "filterFigures": {},
+        "aggregateFigures": {
+          "filterFigures": {}
+        }
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
